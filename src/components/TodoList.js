@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const [editTodo, setEditTodo] = useState(null);
+  const [oldTitle, setOldTitle] = useState("");
   const { user } = useAuth();
   const toast = useToast();
 
@@ -49,23 +50,30 @@ const TodoList = () => {
   }, [user]);
 
   const handleTodoDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this todo?")) {
+    const todo = todos.find((todo) => todo.id === id);
+    if (confirm(`Are you sure you want to delete todo "${todo.title}"?`)) {
       deleteTodo(id);
-      toast({ title: "Todo deleted successfully", status: "success" });
+      toast({
+        title: `Todo "${todo.title}" has been deleted`,
+        status: "error",
+      });
     }
   };
 
   const handleToggle = async (id, status) => {
     const newStatus = status === "completed" ? "pending" : "completed";
+
+    const todo = todos.find((todo) => todo.id === id);
     await toggleTodoStatus({ docId: id, status: newStatus });
     toast({
-      title: `Todo marked ${newStatus}`,
+      title: `Todo "${todo.title}" marked ${newStatus}`,
       status: newStatus === "completed" ? "success" : "warning",
     });
   };
 
   const handleEditTodo = (todo) => {
     setEditTodo({ ...todo }); // make a copy of the todo object
+    setOldTitle(todo.title);
   };
 
   const handleUpdate = async () => {
@@ -76,7 +84,17 @@ const TodoList = () => {
       description: editTodo.description,
     });
 
-    toast({ title: "Todo updated successfully", status: "success" });
+    if (oldTitle !== editTodo.title) {
+      toast({
+        title: `Todo "${oldTitle}" updated successfully to "${editTodo.title}"`,
+        status: "info",
+      });
+    } else {
+      toast({
+        title: `Todo "${editTodo.title}" updated successfully`,
+        status: "info",
+      });
+    }
     setEditTodo(null);
     refreshData();
   };

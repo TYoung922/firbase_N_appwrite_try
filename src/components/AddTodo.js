@@ -44,7 +44,7 @@ const AddTodo = () => {
     setTitle("");
     setDscription("");
     setStatus("pending");
-    toast({ title: "Todo created successfully", status: "success" });
+    toast({ title: `Todo "${title}" created successfully`, status: "success" });
   };
 
   return (
@@ -65,15 +65,15 @@ const AddTodo = () => {
         <select value={status} onChange={(e) => setStatus(e.target.value)}>
           <option
             value={"pending"}
-            style={{ color: "yellow", fontWeight: "bold" }}
+            style={{ color: "orange", fontWeight: "bold" }}
           >
-            Pending
+            Pending &#8987;
           </option>
           <option
             value={"completed"}
             style={{ color: "green", fontWeight: "bold" }}
           >
-            Completed
+            Completed &#9989;
           </option>
         </select>
         <Button
